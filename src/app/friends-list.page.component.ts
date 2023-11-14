@@ -2,6 +2,7 @@ import { Component } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FriendsListComponent } from "./friends-list.component";
 import { Friend } from "./Friend";
+import { SubmitUserNameComponent } from "./submit-user-name.component";
 
 type ListFetchingError = { status: number; message: string };
 
@@ -32,20 +33,31 @@ type ComponentListState =
 @Component({
   selector: "app-friends-list-page",
   standalone: true,
-  imports: [CommonModule, FriendsListComponent],
+  imports: [CommonModule, FriendsListComponent, SubmitUserNameComponent],
 
   template: `
+    <app-submit-user-name 
+    (submitUserName)="createNewName($event)"
+    />
     <app-friends-list
       *ngIf="currentState.state === 'success'"
       [friends]="currentState.result"
     />
     <p *ngIf="currentState.state === 'loading'">Loading...</p>
-    <p *ngIf="currentState.state ==='error'">{{ currentState.error.message }}</p>
+    <p *ngIf="currentState.state === 'error'">
+      {{ currentState.error.message }}
+    </p>
   `,
   styles: [],
 })
 export class FriendsListPageComponent {
   currentState: ComponentListState = { state: "initial" };
+
+  
+
+  createNewName(name: string) {
+    console.log(name)
+  }
 
   private readonly URL = "http://localhost:3000";
 
@@ -74,5 +86,7 @@ export class FriendsListPageComponent {
           }
         }, 1200);
       });
+
+   
   }
 }
