@@ -37,7 +37,7 @@ type ComponentListState =
 
   template: `
     <app-submit-user-name 
-    (submitUserName)="createNewName($event)"
+      (submitUserName)="createNewName($event)"
     />
     <app-friends-list
       *ngIf="currentState.state === 'success'"
