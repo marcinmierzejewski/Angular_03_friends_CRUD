@@ -32,7 +32,10 @@ import { RemoveItemButtonComponent } from "./remove-item-button.component";
           </ng-template>
 
           <div class="flex justify-end p-4">
-            <app-remove-item-button />
+            <app-remove-item-button 
+              [nameDeleteItem]="friend.name"
+            
+            />
           </div>
         </li>
       </ul>

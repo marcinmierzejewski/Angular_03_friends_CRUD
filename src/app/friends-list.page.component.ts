@@ -1,34 +1,10 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FriendsListComponent } from "./friends-list.component";
 import { Friend } from "./Friend";
 import { SubmitUserNameComponent } from "./submit-user-name.component";
-
-type ListFetchingError = { status: number; message: string };
-
-type InitialState = {
-  state: "initial";
-};
-
-type LoadingState = {
-  state: "loading";
-};
-
-type SuccessState = {
-  state: "success";
-  result: Friend[];
-};
-
-type ErrorState = {
-  state: "error";
-  error: ListFetchingError;
-};
-
-type ComponentListState =
-  | InitialState
-  | LoadingState
-  | SuccessState
-  | ErrorState;
+import { FriendsService } from "./friends.service";
+import { ComponentListState, ListFetchingError } from "./list-state.type";
 
 @Component({
   selector: "app-friends-list-page",
@@ -37,7 +13,7 @@ type ComponentListState =
 
   template: `
     <app-submit-user-name 
-      (submitUserName)="createNewName($event)"
+      (submitUserName)="currentState.state === 'success' && createNewName($event, currentState.result)"
     />
     <app-friends-list
       *ngIf="currentState.state === 'success'"
@@ -51,28 +27,13 @@ type ComponentListState =
   styles: [],
 })
 export class FriendsListPageComponent {
-  currentState: ComponentListState = { state: "initial" };
+  currentState: ComponentListState<Friend> = { state: "initial" };
 
-  
+  private friendsService = inject(FriendsService)
 
-  createNewName(name: string) {
-    console.log(name)
-  }
-
-  private readonly URL = "http://localhost:3000";
-
-  constructor() {
+  ngOnInit() {
     this.currentState = { state: "loading" };
-    fetch(`${this.URL}/friends`)
-      .then<Friend[] | ListFetchingError>((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-
-        return { status: response.status, message: response.statusText };
-      })
-      .then((response) => {
-        setTimeout(() => {
+    this.friendsService.getAll().then((response) => {
           if (Array.isArray(response)) {
             this.currentState = {
               state: "success",
@@ -84,9 +45,19 @@ export class FriendsListPageComponent {
               error: response,
             };
           }
-        }, 1200);
-      });
+        });
+      }  
 
-   
+  createNewName(name: string, friends: Friend[]) {
+    this.friendsService.add(name).then((response) => {
+      if ("id" in response) {
+        this.currentState = {
+          state: "success",
+          result: friends.concat(response),
+        };
+      }else {
+        alert(response.message);
+      }
+    });
   }
 }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from "@angular/core";
+import { Component, EventEmitter, Output, Input } from "@angular/core";
 import { NgIf } from "@angular/common";
 import { NgIconComponent, provideIcons } from "@ng-icons/core";
 import {
@@ -27,7 +27,7 @@ import {
         [class.invisible]="!isRemoveMode"
         [class.-translate-x-6]="isRemoveMode"
         [class.bg-red-700]="isRemoveMode"
-        >Are you sure?</span
+        >Delete user {{nameDeleteItem}}? </span
       >
       <button
         *ngIf="!isRemoveMode"
@@ -64,6 +64,7 @@ import {
 })
 export class RemoveItemButtonComponent {
   @Output() deleteItem = new EventEmitter<void>();
+  @Input() nameDeleteItem = ' ';
 
   isRemoveMode = false;
 }
