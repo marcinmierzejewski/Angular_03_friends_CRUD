@@ -50,15 +50,9 @@
     },
     {
       "avatar": "https://cdn-icons-png.flaticon.com/512/2977/2977332.png",
-      "name": "Marek",
+      "name": "Marekff",
       "isOnline": false,
       "id": 1816
-    },
-    {
-      "avatar": "https://cdn-icons-png.flaticon.com/512/2977/2977268.png",
-      "name": "Andrzej",
-      "isOnline": false,
-      "id": 1817
     }
   ]
 }

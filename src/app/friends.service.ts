@@ -35,7 +35,7 @@ export class FriendsService {
   }
 
   async update(friendId: number, name: string) {
-    return fetch(`${this.URL}/tasks/${friendId}`, {
+    return fetch(`${this.URL}/friends/${friendId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

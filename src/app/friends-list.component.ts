@@ -1,7 +1,8 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, inject } from "@angular/core";
 import { CommonModule, NgFor, NgIf } from "@angular/common";
 import { Friend } from "./Friend";
 import { RemoveItemButtonComponent } from "./remove-item-button.component";
+import { FriendsService } from "./friends.service";
 
 @Component({
   selector: "app-friends-list",
@@ -22,8 +23,10 @@ import { RemoveItemButtonComponent } from "./remove-item-button.component";
             (click)="changeLoginStatus(friend)"
           ></button>
           <input
+            #editedText
             *ngIf="isEditMode; else normalMode"
             (keyup.escape)="isEditMode = false"
+            (keyup.enter)="updateFriendName(friend.id, editedText.value); editedText.value = ''"
             [value]="friend.name"
           />
 
@@ -34,7 +37,7 @@ import { RemoveItemButtonComponent } from "./remove-item-button.component";
           <div class="flex justify-end p-4">
             <app-remove-item-button 
               [nameDeleteItem]="friend.name"
-            
+              (deleteItem)="deleteFriend(friend.id)"
             />
           </div>
         </li>
@@ -47,6 +50,16 @@ export class FriendsListComponent {
   @Input({ required: true }) friends: Friend[] = [];
 
   isEditMode = false;
+
+  private friendsService = inject(FriendsService);
+
+  deleteFriend(friendId: number) {
+    this.friendsService.delete(friendId);
+  }
+
+  updateFriendName(friendId: number, updatedName: string) {
+    this.friendsService.update(friendId, updatedName);
+  }
 
   changeLoginStatus(friend: Friend) {
     friend.isOnline = !friend.isOnline;
